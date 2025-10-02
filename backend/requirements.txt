@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+sqlalchemy
+aiosqlite
+httpx
+python-dotenv
+pydantic
+asyncpg        # for Railway Postgres
+psycopg2-binary  # optional fallback for migrations
