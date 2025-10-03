@@ -1,27 +1,41 @@
 from pydantic_settings import BaseSettings
-from typing import List
-import os
+from typing import List, Union
+
 
 class Settings(BaseSettings):
-    DATABASE_URL: str
+    DATABASE_URL: str | None = None
     API_PREFIX: str = "/api/v1"
-    HOSTAWAY_API_BASE: str = "https://api.hostaway.com"
+
+    # Hostaway
+    HOSTAWAY_API_BASE: str = "https://api.hostaway.com/v1"
+    HOSTAWAY_ACCOUNT_ID: int | None = 61148
     HOSTAWAY_API_KEY: str | None = None
     HOSTAWAY_USE_MOCK: bool = True
-    BACKEND_CORS_ORIGINS: List[str] = []
+
+    # CORS
+    BACKEND_CORS_ORIGINS: Union[str, List[str]] = []
+
+    VERSION: str = "1.0.0"
 
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-    # Custom parsing after init
     def __init__(self, **values):
         super().__init__(**values)
-        # If BACKEND_CORS_ORIGINS is a string from .env, split by comma
+        # Normalize BACKEND_CORS_ORIGINS into a list
         if isinstance(self.BACKEND_CORS_ORIGINS, str):
-            self.BACKEND_CORS_ORIGINS = [x.strip() for x in self.BACKEND_CORS_ORIGINS.split(",") if x.strip()]
+            if self.BACKEND_CORS_ORIGINS.strip():
+                self.BACKEND_CORS_ORIGINS = [
+                    x.strip() for x in self.BACKEND_CORS_ORIGINS.split(",")
+                ]
+            else:
+                self.BACKEND_CORS_ORIGINS = []
 
-def get_settings() -> "Settings":
-    return Settings()
 
-settings = get_settings()
+# Singleton settings instance
+settings = Settings()
+
+
+def get_settings() -> Settings:
+    return settings

@@ -1,6 +1,5 @@
 "use client"
 
-import { use } from "react"
 import Link from "next/link"
 import { ArrowLeft, MapPin, Star, Building2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,8 +7,9 @@ import { Separator } from "@/components/ui/separator"
 import { ReviewSection } from "@/components/property/review-section"
 import { useProperty, usePropertyReviews, usePropertyStats } from "@/hooks/use-property"
 
-export default function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
+export default function PropertyPage({ params }: { params: { id: string } }) {
+  const { id } = params
+
   const { property, isLoading: propertyLoading } = useProperty(id)
   const { reviews, isLoading: reviewsLoading } = usePropertyReviews(id)
   const { stats, isLoading: statsLoading } = usePropertyStats(id)

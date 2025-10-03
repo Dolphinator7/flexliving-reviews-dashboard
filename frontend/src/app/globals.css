@@ -1,6 +1,6 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:is(.dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: oklch(1 0 0);
@@ -28,7 +28,7 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(1 0 0);
+  --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -38,60 +38,31 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Updated dark theme with futuristic colors and glassmorphism */
 .dark {
-  /* Deep space backgrounds */
-  --background: oklch(0.08 0.01 264);
-  --foreground: oklch(0.98 0.005 264);
-
-  /* Card with subtle blue tint */
-  --card: oklch(0.12 0.015 264);
-  --card-foreground: oklch(0.98 0.005 264);
-
-  /* Elevated surfaces */
-  --popover: oklch(0.14 0.02 264);
-  --popover-foreground: oklch(0.98 0.005 264);
-
-  /* Vibrant blue primary */
-  --primary: oklch(0.65 0.22 264);
-  --primary-foreground: oklch(0.98 0.005 264);
-
-  /* Muted surfaces with blue tint */
-  --secondary: oklch(0.16 0.02 264);
-  --secondary-foreground: oklch(0.92 0.01 264);
-
-  --muted: oklch(0.18 0.02 264);
-  --muted-foreground: oklch(0.62 0.03 264);
-
-  /* Purple accent */
-  --accent: oklch(0.55 0.25 300);
-  --accent-foreground: oklch(0.98 0.005 264);
-
-  /* Destructive red */
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0.005 264);
-
-  /* Subtle borders */
-  --border: oklch(0.22 0.025 264);
-  --input: oklch(0.18 0.02 264);
-  --ring: oklch(0.65 0.22 264);
-
-  /* Chart colors - vibrant blues, purples, cyans */
-  --chart-1: oklch(0.65 0.22 264);
-  --chart-2: oklch(0.7 0.18 200);
-  --chart-3: oklch(0.6 0.25 300);
-  --chart-4: oklch(0.75 0.15 180);
-  --chart-5: oklch(0.55 0.2 280);
-
-  /* Success and warning */
-  --success: oklch(0.7 0.18 160);
-  --warning: oklch(0.75 0.15 85);
-
-  /* Glass effect variables */
-  --glass-bg: oklch(0.12 0.015 264 / 0.6);
-  --glass-border: oklch(0.35 0.05 264 / 0.3);
-
-  --radius: 0.75rem;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -103,6 +74,7 @@
 }
 
 @theme inline {
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -127,8 +99,6 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-success: oklch(0.7 0.18 160);
-  --color-warning: oklch(0.75 0.15 85);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -150,21 +120,75 @@
   body {
     @apply bg-background text-foreground;
   }
+}
 
-  /* Added glass morphism utility classes */
+@layer utilities {
+  /* Enhanced glassmorphism effects */
   .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
+    @apply bg-card/40 backdrop-blur-xl border border-white/10;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 
   .glass-card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply transition-all duration-300;
   }
 
   .glass-card-hover:hover {
-    background: oklch(0.14 0.02 264 / 0.7);
-    border-color: oklch(0.45 0.08 264 / 0.4);
-    transform: translateY(-2px);
+    @apply bg-card/60 border-primary/30 shadow-lg shadow-primary/10 -translate-y-1;
+  }
+
+  /* Neon glow effects */
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+  }
+
+  /* Grid background pattern */
+  .grid-pattern {
+    background-image: linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Animated gradient border */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.5), rgba(168, 85, 247, 0.5));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Shimmer effect */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    animation: shimmer 3s infinite linear;
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.1) 50%, transparent 100%);
+    background-size: 1000px 100%;
   }
 }
