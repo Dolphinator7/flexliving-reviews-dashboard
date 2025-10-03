@@ -1,0 +1,104 @@
+{
+  "reviews": [
+    {
+      "id": "rev_001",
+      "listingId": "prop_001",
+      "listingName": "Luxury Downtown Loft",
+      "guestName": "Sarah Johnson",
+      "rating": 5.0,
+      "review": "Absolutely stunning property! The location was perfect, right in the heart of downtown. The loft was immaculately clean and had all the amenities we needed. Would definitely stay again!",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "channelName": "Airbnb"
+    },
+    {
+      "id": "rev_002",
+      "listingId": "prop_001",
+      "listingName": "Luxury Downtown Loft",
+      "guestName": "Michael Chen",
+      "rating": 4.5,
+      "review": "Great stay overall. The apartment was modern and well-equipped. Only minor issue was some street noise at night, but nothing major. Host was very responsive.",
+      "createdAt": "2024-01-20T14:15:00Z",
+      "channelName": "Booking.com"
+    },
+    {
+      "id": "rev_003",
+      "listingId": "prop_002",
+      "listingName": "Beachfront Villa",
+      "guestName": "Emily Rodriguez",
+      "rating": 5.0,
+      "review": "Paradise! Waking up to ocean views every morning was incredible. The villa exceeded all expectations. Private beach access was a huge plus. Can't wait to return!",
+      "createdAt": "2024-01-18T09:45:00Z",
+      "channelName": "Airbnb"
+    },
+    {
+      "id": "rev_004",
+      "listingId": "prop_002",
+      "listingName": "Beachfront Villa",
+      "guestName": "David Thompson",
+      "rating": 4.8,
+      "review": "Fantastic property with amazing views. The outdoor space was perfect for our family. Kitchen was fully stocked. Only wish we could have stayed longer!",
+      "createdAt": "2024-01-22T16:20:00Z",
+      "channelName": "Booking.com"
+    },
+    {
+      "id": "rev_005",
+      "listingId": "prop_003",
+      "listingName": "Mountain Retreat Cabin",
+      "guestName": "Jennifer Lee",
+      "rating": 4.7,
+      "review": "Cozy mountain getaway with breathtaking views. The cabin was warm and inviting. Perfect for a winter retreat. Hot tub was a wonderful addition after a day of skiing.",
+      "createdAt": "2024-01-12T11:00:00Z",
+      "channelName": "Airbnb"
+    },
+    {
+      "id": "rev_006",
+      "listingId": "prop_003",
+      "listingName": "Mountain Retreat Cabin",
+      "guestName": "Robert Martinez",
+      "rating": 4.5,
+      "review": "Beautiful location and well-maintained property. The fireplace created a perfect ambiance. Would recommend bringing extra firewood. Overall excellent experience.",
+      "createdAt": "2024-01-25T13:30:00Z",
+      "channelName": "Booking.com"
+    },
+    {
+      "id": "rev_007",
+      "listingId": "prop_001",
+      "listingName": "Luxury Downtown Loft",
+      "guestName": "Amanda White",
+      "rating": 4.9,
+      "review": "Exceptional property in a prime location. Walking distance to restaurants and attractions. The design and decor were top-notch. Host provided excellent recommendations.",
+      "createdAt": "2024-01-28T10:15:00Z",
+      "channelName": "Airbnb"
+    },
+    {
+      "id": "rev_008",
+      "listingId": "prop_002",
+      "listingName": "Beachfront Villa",
+      "guestName": "Christopher Brown",
+      "rating": 5.0,
+      "review": "Best vacation rental we've ever stayed in! The attention to detail was remarkable. Beach access, pool, and outdoor kitchen made it perfect for our group. Highly recommend!",
+      "createdAt": "2024-01-30T15:45:00Z",
+      "channelName": "Airbnb"
+    },
+    {
+      "id": "rev_009",
+      "listingId": "prop_003",
+      "listingName": "Mountain Retreat Cabin",
+      "guestName": "Lisa Anderson",
+      "rating": 4.6,
+      "review": "Wonderful cabin with all the comforts of home. The mountain views were spectacular. Great for families. Kitchen had everything we needed to cook meals.",
+      "createdAt": "2024-02-01T12:00:00Z",
+      "channelName": "Booking.com"
+    },
+    {
+      "id": "rev_010",
+      "listingId": "prop_001",
+      "listingName": "Luxury Downtown Loft",
+      "guestName": "James Wilson",
+      "rating": 4.4,
+      "review": "Solid choice for a downtown stay. Modern amenities and comfortable beds. Parking was a bit tricky but manageable. Would stay again for the location alone.",
+      "createdAt": "2024-02-03T09:30:00Z",
+      "channelName": "Airbnb"
+    }
+  ]
+}
