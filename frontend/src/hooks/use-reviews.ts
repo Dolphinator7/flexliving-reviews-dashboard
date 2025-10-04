@@ -1,38 +1,46 @@
-"use client"
+// src/hooks/use-reviews.ts
+import { useEffect, useState } from "react"
+import { API_URL } from "@/lib/constants"
 
-import useSWR from "swr"
-import { reviewsAPI } from "@/lib/api"
-import type { ReviewFilters } from "@/types/review"
-import type { SortField } from "@/types/review"
+export function useReviews() {
+  const [reviews, setReviews] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-export function useReviews(
-  filters?: ReviewFilters & {
-    sort_by?: SortField
-    sort_desc?: boolean
-  },
-) {
-  const { data, error, isLoading, mutate } = useSWR(["/reviews", filters], () => reviewsAPI.getReviews(filters), {
-    revalidateOnFocus: false,
-    dedupingInterval: 5000,
-  })
+  useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const res = await fetch(`${API_URL}/reviews`)
+        const json = await res.json()
+        if (json.status === "success") {
+          setReviews(json.result)
+        }
+      } catch (err) {
+        console.error("Failed to fetch reviews", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchReviews()
+  }, [])
 
-  return {
-    reviews: data,
-    isLoading,
-    isError: error,
-    mutate,
-  }
+  return { reviews, loading }
 }
 
+// ✅ Add this function (this was missing)
 export function useOverallStats() {
-  const { data, error, isLoading } = useSWR("/stats/overall", () => reviewsAPI.getOverallStats(), {
-    revalidateOnFocus: false,
-    dedupingInterval: 10000,
-  })
+  const { reviews, loading } = useReviews()
+
+  const totalReviews = reviews.length
+  const avgRating =
+    totalReviews > 0
+      ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / totalReviews).toFixed(1)
+      : "0.0"
+
+  const recentReview = reviews.length > 0 ? reviews[0] : null
 
   return {
-    stats: data,
-    isLoading,
-    isError: error,
+    stats: { totalReviews, avgRating, recentReview },
+    isLoading: loading,
   }
 }
+

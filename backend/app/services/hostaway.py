@@ -1,7 +1,7 @@
-import httpx
-from app.config import get_settings
-
-settings = get_settings()
+import requests
+import json
+import os
+from app.config import settings
 
 class HostawayClient:
     def __init__(self):
@@ -9,23 +9,30 @@ class HostawayClient:
         self.api_key = settings.HOSTAWAY_API_KEY
         self.account_id = settings.HOSTAWAY_ACCOUNT_ID
 
-        if not self.api_key:
-            raise ValueError("Missing Hostaway API key")
+    def get_reviews(self):
+        url = f"{self.base_url}/v1/reviews"
+        headers = {
+            "Content-Type": "application/json",
+            "X-ACCOUNT-ID": str(self.account_id),
+            "X-API-KEY": self.api_key,
+        }
 
-    async def get_reviews(self):
-        url = f"{self.base_url}/v1/reviews?accountId={self.account_id}"
-        headers = {"Authorization": f"Bearer {self.api_key}"}
+        try:
+            resp = requests.get(url, headers=headers, timeout=10)
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, headers=headers)
-            response.raise_for_status()
-            return response.json()
+            # ✅ If live API works
+            if resp.status_code == 200:
+                return resp.json().get("result", [])
 
-    async def get_property(self, property_id: int):
-        url = f"{self.base_url}/v1/listings/{property_id}?accountId={self.account_id}"
-        headers = {"Authorization": f"Bearer {self.api_key}"}
+            # ❌ If sandbox rejects
+            print(f"Hostaway API failed with {resp.status_code}, using mock data.")
+            return self._load_mock_reviews()
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, headers=headers)
-            response.raise_for_status()
-            return response.json()
+        except Exception as e:
+            print(f"Error fetching Hostaway reviews: {e}")
+            return self._load_mock_reviews()
+
+    def _load_mock_reviews(self):
+        mock_path = os.path.join(os.path.dirname(__file__), "../../data/mock_reviews.json")
+        with open(mock_path, "r", encoding="utf-8") as f:
+            return json.load(f)

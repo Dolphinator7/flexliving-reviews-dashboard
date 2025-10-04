@@ -1,31 +1,43 @@
-"use client"
-
 import useSWR from "swr"
-import { fetcher } from "@/lib/api"
-import type { Property, PropertyStats, Review } from "@/types/property"
+import { propertiesAPI } from "@/lib/api"
 
+// 🏠 Fetch a single property by ID/slug
 export function useProperty(id: string) {
-  const { data, error, isLoading } = useSWR(`/properties/${id}`, fetcher)
+  const { data, error, isLoading } = useSWR(
+    id ? `/properties/${id}` : null,
+    () => propertiesAPI.getProperty(id)
+  )
+
   return {
-    property: data?.data as Property,
+    property: data,
     isLoading,
     isError: error,
   }
 }
 
+// 💬 Fetch all reviews for a specific property
 export function usePropertyReviews(id: string) {
-  const { data, error, isLoading } = useSWR(`/reviews?propertyId=${id}`, fetcher)
+  const { data, error, isLoading } = useSWR(
+    id ? `/properties/${id}/reviews` : null,
+    () => propertiesAPI.getReviews(id)
+  )
+
   return {
-    reviews: data?.data as Review[],
+    reviews: data,
     isLoading,
     isError: error,
   }
 }
 
+// 📊 Fetch property stats (average rating, total reviews, etc.)
 export function usePropertyStats(id: string) {
-  const { data, error, isLoading } = useSWR(`/reviews/stats?propertyId=${id}`, fetcher)
+  const { data, error, isLoading } = useSWR(
+    id ? `/properties/${id}/stats` : null,
+    () => propertiesAPI.getStats(id)
+  )
+
   return {
-    stats: data?.data as PropertyStats,
+    stats: data,
     isLoading,
     isError: error,
   }

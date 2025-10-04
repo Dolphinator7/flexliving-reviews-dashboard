@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.98 0 0); /* subtle light mode bg (off-white) */
+  --foreground: oklch(0.15 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -39,12 +39,19 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --background: linear-gradient(
+    135deg,
+    oklch(0.22 0 260) 0%,
+    oklch(0.18 0 240) 50%,
+    oklch(0.20 0 270) 100%
+  ); /* deep slate/indigo gradient */
+  
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.24 0 260);
+  --card-foreground: oklch(0.97 0 0);
+
+  --popover: oklch(0.24 0 260);
+  --popover-foreground: oklch(0.97 0 0);
   --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
@@ -125,7 +132,7 @@
 @layer utilities {
   /* Enhanced glassmorphism effects */
   .glass-card {
-    @apply bg-card/40 backdrop-blur-xl border border-white/10;
+    @apply border bg-card/40 backdrop-blur-xl border-white/10;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 
@@ -134,7 +141,7 @@
   }
 
   .glass-card-hover:hover {
-    @apply bg-card/60 border-primary/30 shadow-lg shadow-primary/10 -translate-y-1;
+    @apply -translate-y-1 shadow-lg bg-card/60 border-primary/30 shadow-primary/10;
   }
 
   /* Neon glow effects */

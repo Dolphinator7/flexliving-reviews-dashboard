@@ -1,62 +1,41 @@
-from typing import List, Dict, Any
-import statistics
-from app.models.review import Review
-
-def compute_property_stats(reviews: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Compute analytics stats from a list of reviews.
-    Each review is expected to contain:
-      - "rating" (int or float)
-      - "reviewCategory" (list of { category, rating })
-    """
-
+def calculate_review_analytics(reviews: list):
     if not reviews:
         return {
-            "average_rating": 0,
-            "total_reviews": 0,
-            "categories": {}
+            "rating_distribution": [],
+            "source_distribution": [],
+            "sentiment": {},
         }
 
-    ratings = [r["rating"] for r in reviews if r.get("rating") is not None]
-
-    categories: Dict[str, list] = {}
+    # Rating distribution
+    ratings = {}
     for r in reviews:
-        for c in r.get("reviewCategory", []):
-            cat = c["category"]
-            categories.setdefault(cat, []).append(c["rating"])
+        rating = r.get("rating", 0) or 0
+        ratings[rating] = ratings.get(rating, 0) + 1
 
-    return {
-        "average_rating": round(statistics.mean(ratings), 2) if ratings else 0,
-        "total_reviews": len(reviews),
-        "categories": {
-            cat: round(statistics.mean(vals), 2) for cat, vals in categories.items()
-        },
+    rating_distribution = [
+        {"rating": k, "count": v}
+        for k, v in sorted(ratings.items(), reverse=True)
+    ]
+
+    # Source breakdown (mock: channel if exists, else "Unknown")
+    sources = {}
+    for r in reviews:
+        src = r.get("channel", "Unknown")
+        sources[src] = sources.get(src, 0) + 1
+
+    source_distribution = [
+        {"source": k, "count": v} for k, v in sources.items()
+    ]
+
+    # Very simple sentiment placeholder
+    sentiment = {
+        "positive": sum(1 for r in reviews if "good" in r.get("publicReview", "").lower()),
+        "negative": sum(1 for r in reviews if "bad" in r.get("publicReview", "").lower()),
+        "neutral": 0,
     }
 
-def get_review_analytics(reviews: List[Review]) -> Dict[str, any]:
-    """
-    Generate analytics summary for a list of reviews.
-    Example: average rating, total reviews, sentiment counts, etc.
-    """
-    if not reviews:
-        return {
-            "average_rating": 0,
-            "total_reviews": 0,
-            "distribution": {},
-        }
-
-    total_reviews = len(reviews)
-    ratings = [r.rating for r in reviews if r.rating is not None]
-
-    avg_rating = sum(ratings) / len(ratings) if ratings else 0
-
-    # Distribution by rating (1–5)
-    distribution: Dict[int, int] = {}
-    for r in ratings:
-        distribution[r] = distribution.get(r, 0) + 1
-
     return {
-        "average_rating": round(avg_rating, 2),
-        "total_reviews": total_reviews,
-        "distribution": distribution,
+        "rating_distribution": rating_distribution,
+        "source_distribution": source_distribution,
+        "sentiment": sentiment,
     }

@@ -11,34 +11,44 @@ from app.middleware.error_handler import (
     general_error_handler,
 )
 
-# Initialize FastAPI app
+# ✅ Initialize FastAPI app
 app = FastAPI(
     title="Flex Living Reviews API",
+    description="Backend API for managing property reviews, analytics, and integrations.",
     version=settings.VERSION,
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
+    docs_url=f"{settings.API_PREFIX}/docs",       # Swagger docs available under /api/v1/docs
+    redoc_url=f"{settings.API_PREFIX}/redoc",     # Alternative docs at /api/v1/redoc
 )
 
-# Configure CORS
+# ✅ Setup CORS middleware
 setup_cors(app)
 
-# Error handlers
+# ✅ Register custom error handlers
 app.add_exception_handler(StarletteHTTPException, http_error_handler)
 app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.add_exception_handler(Exception, general_error_handler)
 
-# API routes
+# ✅ Mount API routes
 app.include_router(api_router, prefix=settings.API_PREFIX)
 
 
-@app.get("/")
+# -------------------------
+# Health & Root Endpoints
+# -------------------------
+
+@app.get("/", tags=["system"])
 async def root():
+    """Root endpoint with basic API info"""
     return {
         "message": "Flex Living Reviews API",
         "version": settings.VERSION,
         "docs": f"{settings.API_PREFIX}/docs",
+        "health": "/health"
     }
 
 
-@app.get("/health")
+@app.get("/health", tags=["system"])
 async def health_check():
+    """Health check endpoint for monitoring"""
     return {"status": "healthy"}
