@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { useAnalytics } from "@/hooks/use-analytics"
 import { SOURCE_STYLES } from "@/lib/constants"
+import { RatingDistributionItem } from "@/types/analytics"
 
 export function AnalyticsCharts() {
   const { data, loading } = useAnalytics()
@@ -69,25 +70,26 @@ export function AnalyticsCharts() {
             </div>
 
             <div className="space-y-3">
-              {data.ratingDistribution.map((item) => (
-                <div key={item.rating} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-gray-200">
-                        {item.rating} Star
-                      </span>
-                    </div>
-                    <span className="text-gray-400">{item.count}</span>
-                  </div>
-                  <div className="h-2 overflow-hidden bg-gray-700 rounded-full">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-yellow-400 to-orange-500"
-                      style={{ width: `${item.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+              {data.ratingDistribution.map((item: RatingDistributionItem) => (
+  <div key={item.rating} className="space-y-1.5">
+    <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center gap-2">
+        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+        <span className="font-medium text-gray-200">
+          {item.rating} Star
+        </span>
+      </div>
+      <span className="text-gray-400">{item.count}</span>
+    </div>
+    <div className="h-2 overflow-hidden bg-gray-700 rounded-full">
+      <div
+        className="h-full rounded-full bg-gradient-to-r from-yellow-400 to-orange-500"
+        style={{ width: `${item.percentage}%` }}
+      />
+    </div>
+  </div>
+))}
+
             </div>
           </div>
         </Card>

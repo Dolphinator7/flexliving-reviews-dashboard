@@ -1,11 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Star } from "lucide-react"
-import { API_URL } from "@/lib/constants"
 
 interface Review {
   id: number
@@ -16,6 +14,12 @@ interface Review {
   channel: string
   submittedAt: string
   status?: string
+}
+
+interface ReviewsTableProps {
+  reviews: Review[]
+  onReviewUpdate?: () => void
+  loading?: boolean
 }
 
 function getStatusBadge(status?: string) {
@@ -31,31 +35,7 @@ function getStatusBadge(status?: string) {
   }
 }
 
-export function ReviewsTable() {
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchReviews() {
-      try {
-        const res = await fetch(`${API_URL}/reviews`)
-        const json = await res.json()
-
-        if (json.status === "success" && Array.isArray(json.result)) {
-          setReviews(json.result)
-        } else {
-          setReviews([])
-        }
-      } catch (err) {
-        console.error("Failed to fetch reviews", err)
-        setReviews([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchReviews()
-  }, [])
-
+export function ReviewsTable({ reviews, loading, onReviewUpdate }: ReviewsTableProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[300px] text-gray-400">
@@ -64,7 +44,7 @@ export function ReviewsTable() {
     )
   }
 
-  if (reviews.length === 0) {
+  if (!reviews || reviews.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[300px] text-gray-400">
         No reviews found
@@ -93,16 +73,9 @@ export function ReviewsTable() {
               key={review.id}
               className="transition-all duration-300 hover:bg-gray-800/70 hover:shadow-md hover:shadow-indigo-500/10"
             >
-              {/* Guest */}
               <TableCell className="font-medium text-gray-200">{review.guestName}</TableCell>
-
-              {/* Listing */}
               <TableCell className="text-gray-300">{review.listingName}</TableCell>
-
-              {/* Channel */}
               <TableCell className="text-gray-400">{review.channel}</TableCell>
-
-              {/* Rating */}
               <TableCell>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: review.rating }).map((_, i) => (
@@ -110,23 +83,28 @@ export function ReviewsTable() {
                   ))}
                 </div>
               </TableCell>
-
-              {/* Review text (truncate w/ tooltip) */}
               <TableCell className="max-w-[280px] truncate text-gray-300" title={review.publicReview}>
                 {review.publicReview}
               </TableCell>
-
-              {/* Date */}
               <TableCell className="text-sm text-gray-400">
                 {review.submittedAt ? format(new Date(review.submittedAt), "MMM d, yyyy") : "—"}
               </TableCell>
-
-              {/* Status Badge */}
               <TableCell>{getStatusBadge(review.status)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {onReviewUpdate && (
+        <div className="p-4 text-center">
+          <button
+            onClick={onReviewUpdate}
+            className="px-4 py-2 text-white transition bg-indigo-600 rounded-lg hover:bg-indigo-700"
+          >
+            Refresh Reviews
+          </button>
+        </div>
+      )}
     </div>
   )
 }

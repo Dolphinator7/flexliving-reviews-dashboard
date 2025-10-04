@@ -5,9 +5,9 @@ import { useReviews } from "@/hooks/use-reviews"
 import { Star, MessageSquare } from "lucide-react"
 
 export function RecentReviews() {
-  const { reviews, loading } = useReviews()
+  const { reviews, isLoading } = useReviews()
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="p-6 border border-gray-700 shadow-md bg-gray-800/70">
         <p className="text-gray-300">Loading recent reviews...</p>

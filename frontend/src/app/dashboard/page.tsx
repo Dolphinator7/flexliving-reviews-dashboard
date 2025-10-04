@@ -44,7 +44,7 @@ export default function DashboardPage() {
     sort_desc: true,
   })
 
-  const { reviews, isLoading, mutate } = useReviews(filters)
+  const { reviews, isLoading, mutate } = useReviews()
 
   const [properties, setProperties] = useState<Property[]>([])
   const [loadingProperties, setLoadingProperties] = useState(true)
