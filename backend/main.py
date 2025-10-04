@@ -22,16 +22,16 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost:3000",
     "https://flexliving-reviews-dashboard-lovat.vercel.app",
     "https://welcoming-playfulness-production.up.railway.app"  # if frontend needs to call itself
 ]
+
 
 setup_cors(app)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
