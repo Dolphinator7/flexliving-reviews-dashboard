@@ -16,3 +16,12 @@ export enum SortField {
   RATING = "rating",
   PROPERTY = "property",
 }
+
+export interface ReviewFilters {
+  rating?: number
+  source?: string
+  dateRange?: {
+    from: string
+    to: string
+  }
+}
