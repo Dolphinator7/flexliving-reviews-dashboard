@@ -1,14 +1,15 @@
+// src/lib/api.ts
 import { API_URL } from "./constants";
 
-// Generic fetcher for SWR
-export const fetcher = (url: string) =>
-  fetch(`${API_URL}${url}`).then((res) => {
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    return res.json();
-  });
+// Generic fetcher for SWR or any fetch calls
+export const fetcher = async (url: string) => {
+  const res = await fetch(`${API_URL}${url}`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+};
 
 // -------------------------------
-// Reviews API
+// Reviews API (global)
 // -------------------------------
 export const reviewsAPI = {
   async list() {
@@ -48,7 +49,7 @@ export const propertiesAPI = {
 };
 
 // -------------------------------
-// Analytics API
+// Analytics API (global)
 // -------------------------------
 export const analyticsAPI = {
   async fetchAnalytics() {
