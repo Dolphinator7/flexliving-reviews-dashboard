@@ -17,7 +17,6 @@ export function useReviews() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // ✅ useCallback so `mutate` has a stable reference
   const fetchReviews = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -41,11 +40,9 @@ export function useReviews() {
     fetchReviews()
   }, [fetchReviews])
 
-  // ✅ return mutate for manual refresh
   return { reviews, isLoading, mutate: fetchReviews }
 }
 
-// ✅ Overall Stats Hook
 export function useOverallStats() {
   const { reviews, isLoading, mutate } = useReviews()
 
