@@ -14,7 +14,7 @@ export function ReviewSection({ stats, reviews }: ReviewSectionProps) {
   if (!reviews || reviews.length === 0) {
     return (
       <div className="py-12 text-center">
-        <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
         <p className="text-gray-600">No reviews yet</p>
       </div>
     )

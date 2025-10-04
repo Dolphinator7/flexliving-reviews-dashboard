@@ -22,23 +22,29 @@ export const reviewsAPI = {
 // -------------------------------
 // Properties API
 // -------------------------------
+// src/lib/api.ts
+
 export const propertiesAPI = {
+  async list() {
+    // ✅ /api/v1/properties
+    const res = await fetch(`${API_URL}/properties`)
+    if (!res.ok) throw new Error("Failed to fetch properties")
+    return res.json()
+  },
+
   async getProperty(slug: string) {
-    // ✅ /api/v1/properties/{property_id}
     const res = await fetch(`${API_URL}/properties/${slug}`)
     if (!res.ok) throw new Error("Failed to fetch property")
     return res.json()
   },
 
   async getReviews(slug: string) {
-    // ✅ /api/v1/properties/{property_id}/reviews
     const res = await fetch(`${API_URL}/properties/${slug}/reviews`)
     if (!res.ok) throw new Error("Failed to fetch property reviews")
     return res.json()
   },
 
   async getStats(slug: string) {
-    // ✅ /api/v1/properties/{property_id}/stats
     const res = await fetch(`${API_URL}/properties/${slug}/stats`)
     if (!res.ok) throw new Error("Failed to fetch property stats")
     return res.json()
@@ -56,3 +62,17 @@ export const analyticsAPI = {
     return res.json()
   },
 }
+
+export const googleAPI = {
+  async searchPlace(query: string) {
+    const res = await fetch(`/api/v1/google/search?query=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error("Failed to search place");
+    return res.json();
+  },
+
+  async getReviews(placeId: string) {
+    const res = await fetch(`/api/v1/google/reviews/${placeId}`);
+    if (!res.ok) throw new Error("Failed to load Google reviews");
+    return res.json();
+  },
+};

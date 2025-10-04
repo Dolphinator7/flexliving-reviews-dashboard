@@ -31,24 +31,23 @@ MOCK_PROPERTIES = {
         "name": "2B Shoreditch Heights",
         "address": "Shoreditch High St",
         "city": "London",
-        "image_url": "/images/shoreditch.jpg",
+        "image_url": "/images/shoreditch-heights.jpg",
     },
     "kensington-garden": {
         "id": "kensington-garden",
         "name": "Kensington Garden House",
         "address": "Kensington Rd",
         "city": "London",
-        "image_url": "/images/kensington.jpg",
+        "image_url": "/images/kingston.jpg",
     },
     "central-london-loft": {
         "id": "central-london-loft",
         "name": "Central London Loft",
         "address": "King St",
         "city": "London",
-        "image_url": "/images/central.jpg",
+        "image_url": "/images/central-london-loft.png",
     },
 }
-
 
 # ✅ Helper function to calculate stats
 def calculate_property_stats(listing_name: str):
@@ -66,6 +65,20 @@ def calculate_property_stats(listing_name: str):
         "rating_distribution": distribution,
     }
 
+# ✅ Normalize review source values
+def normalize_source(channel: str) -> str:
+    if not channel:
+        return "unknown"
+    channel = channel.lower().strip()
+    if channel in ["booking.com", "bookingcom"]:
+        return "booking"
+    if channel in ["airbnb.com", "airbnb"]:
+        return "airbnb"
+    if channel in ["google reviews", "google.com"]:
+        return "google"
+    if channel in ["hostaway.com", "hostaway"]:
+        return "hostaway"
+    return channel  # fallback (must match enum values)
 
 # ✅ 1. Get all properties (with stats)
 @router.get("/", response_model=list[Property])
@@ -77,7 +90,6 @@ def get_all_properties():
         properties.append({**prop, **stats})
     return properties
 
-
 # ✅ 2. Get a single property (with stats)
 @router.get("/{property_id}", response_model=Property)
 def get_property(property_id: str):
@@ -87,7 +99,6 @@ def get_property(property_id: str):
     listing_name = PROPERTY_MAP[property_id]
     stats = calculate_property_stats(listing_name)
     return {**MOCK_PROPERTIES[property_id], **stats}
-
 
 # ✅ 3. Get property reviews
 @router.get("/{property_id}/reviews", response_model=list[Review])
@@ -103,6 +114,7 @@ def get_property_reviews(property_id: str):
 
     reviews = []
     for r in raw_reviews:
+        channel = normalize_source(r.get("channel", "unknown"))
         reviews.append({
             "id": str(r.get("id", "")),
             "property_id": property_id,
@@ -112,11 +124,10 @@ def get_property_reviews(property_id: str):
             "rating": r.get("rating", 0),
             "date": r.get("submittedAt") or datetime.utcnow().isoformat(),
             "status": "approved" if r.get("status") in ["published", "approved"] else "pending",
-            "source": r.get("channel", "unknown").lower(),
+            "source": channel,
         })
 
     return reviews
-
 
 # ✅ 4. Get property stats only
 @router.get("/{property_id}/stats")
@@ -126,4 +137,3 @@ def get_property_stats(property_id: str):
 
     listing_name = PROPERTY_MAP[property_id]
     return calculate_property_stats(listing_name)
-

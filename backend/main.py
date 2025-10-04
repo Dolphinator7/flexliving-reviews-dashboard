@@ -11,7 +11,6 @@ from app.middleware.error_handler import (
     general_error_handler,
 )
 
-# ✅ Initialize FastAPI app
 app = FastAPI(
     title="Flex Living Reviews API",
     description="Backend API for managing property reviews, analytics, and integrations.",
@@ -31,7 +30,6 @@ app.add_exception_handler(Exception, general_error_handler)
 
 # ✅ Mount API routes
 app.include_router(api_router, prefix=settings.API_PREFIX)
-
 
 # -------------------------
 # Health & Root Endpoints
