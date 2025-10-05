@@ -22,20 +22,8 @@ export function useReviews() {
     try {
       const res = await fetch(`${API_URL}/reviews`)
       const json = await res.json()
-
       if (json.status === "success" && Array.isArray(json.result)) {
-        // ✅ Map backend snake_case fields to frontend camelCase
-        const mappedReviews: Review[] = json.result.map((r: any) => ({
-          id: r.id,
-          rating: r.rating,
-          publicReview: r.publicReview,
-          guestName: r.guest_name,
-          listingName: r.listing_name,
-          channel: r.type,
-          submittedAt: r.date,
-          status: r.status,
-        }))
-        setReviews(mappedReviews)
+        setReviews(json.result)
       } else {
         setReviews([])
       }
@@ -47,6 +35,7 @@ export function useReviews() {
     }
   }, [])
 
+  // Fetch on mount
   useEffect(() => {
     fetchReviews()
   }, [fetchReviews])
@@ -70,6 +59,6 @@ export function useOverallStats() {
   return {
     stats: { totalReviews, avgRating, recentReview },
     isLoading,
-    mutate,
+    mutate, 
   }
 }
