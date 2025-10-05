@@ -23,8 +23,8 @@ app = FastAPI(
 
 origins = [
     "http://localhost:3000",
-    "https://flexliving-reviews-dashboard-lovat.vercel.app",
-    "https://welcoming-playfulness-production.up.railway.app"  # if frontend needs to call itself
+    "https://flexliving-reviews-dashboard-lovat.vercel.app",  # Vercel prod
+    "https://flexliving-reviews-dashboard-i61lrj7cx.vercel.app"  # if frontend needs to call itself
 ]
 
 
