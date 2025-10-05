@@ -1,5 +1,9 @@
 // src/lib/constants.ts
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:8000/api/v1"
+    : "https://welcoming-playfulness-production.up.railway.app/api/v1");
 
 // canonical source keys
 export const REVIEW_SOURCES = {
