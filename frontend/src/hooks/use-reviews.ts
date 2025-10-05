@@ -1,8 +1,7 @@
-// src/hooks/use-reviews.ts
 import { useEffect, useState, useCallback } from "react"
 import { API_URL } from "@/lib/constants"
 
-interface Review {
+export interface Review {
   id: number
   rating: number
   publicReview: string
@@ -10,32 +9,46 @@ interface Review {
   listingName: string
   channel: string
   submittedAt: string
+  is_approved?: boolean
   status?: string
 }
 
-export function useReviews() {
+export interface ReviewFilters {
+  search?: string
+  source?: string
+  status?: string
+  min_rating?: number
+}
+
+export function useReviews(filters: ReviewFilters = {}) {
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchReviews = useCallback(async () => {
     setIsLoading(true)
     try {
-      const res = await fetch(`${API_URL}/reviews`)
+      // Construct query string dynamically from filters
+      const params = new URLSearchParams()
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== "") {
+          params.append(key, String(value))
+        }
+      })
+
+      const res = await fetch(`${API_URL}/reviews?${params.toString()}`)
       const json = await res.json()
-      if (json.status === "success" && Array.isArray(json.result)) {
-        setReviews(json.result)
-      } else {
-        setReviews([])
-      }
+
+      // Automatically unwrap wrapper responses
+      const data = json?.reviews || json?.result || json?.data || []
+      setReviews(Array.isArray(data) ? data : [])
     } catch (err) {
       console.error("Failed to fetch reviews", err)
       setReviews([])
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [filters])
 
-  // Fetch on mount
   useEffect(() => {
     fetchReviews()
   }, [fetchReviews])
@@ -43,8 +56,27 @@ export function useReviews() {
   return { reviews, isLoading, mutate: fetchReviews }
 }
 
-export function useOverallStats() {
-  const { reviews, isLoading, mutate } = useReviews()
+export async function patchReviewStatus(
+  reviewId: number,
+  status: "approved" | "rejected"
+) {
+  try {
+    const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    })
+    const json = await res.json()
+    if (!res.ok) throw new Error(json.detail || "Failed to update review")
+    return json
+  } catch (err: any) {
+    console.error("Failed to patch review:", err)
+    throw err
+  }
+}
+
+export function useOverallStats(filters: ReviewFilters = {}) {
+  const { reviews, isLoading, mutate } = useReviews(filters)
 
   const totalReviews = reviews.length
   const avgRating =
@@ -59,6 +91,7 @@ export function useOverallStats() {
   return {
     stats: { totalReviews, avgRating, recentReview },
     isLoading,
-    mutate, 
+    mutate,
   }
 }
+

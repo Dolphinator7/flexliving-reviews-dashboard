@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { StatsCards } from "@/components/dashboard/stats-cards"
@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// Property type
 type Property = {
   id: string
   name: string
@@ -44,12 +45,12 @@ export default function DashboardPage() {
     sort_desc: true,
   })
 
-  const { reviews, isLoading, mutate } = useReviews()
-
+  const { reviews, isLoading, mutate } = useReviews(filters)
   const [properties, setProperties] = useState<Property[]>([])
   const [loadingProperties, setLoadingProperties] = useState(true)
   const router = useRouter()
 
+  // Fetch available properties for dropdown
   useEffect(() => {
     propertiesAPI
       .list()
@@ -57,6 +58,17 @@ export default function DashboardPage() {
       .catch((err) => console.error("Failed to load properties:", err))
       .finally(() => setLoadingProperties(false))
   }, [])
+
+  // Handle filter updates (sends them to backend)
+  const handleFiltersChange = useCallback(
+    (newFilters: Partial<ReviewFilters>) => {
+      setFilters((prev) => ({
+        ...prev,
+        ...newFilters,
+      }))
+    },
+    []
+  )
 
   return (
     <div className="min-h-screen bg-background grid-pattern">
@@ -155,9 +167,7 @@ export default function DashboardPage() {
           <AnalyticsCharts />
 
           {/* Filters */}
-          <FiltersPanel
-            onFiltersChange={(newFilters) => setFilters({ ...filters, ...newFilters })}
-          />
+          <FiltersPanel onFiltersChange={handleFiltersChange} />
 
           {/* Reviews */}
           <div className="space-y-4">
@@ -187,7 +197,11 @@ export default function DashboardPage() {
                 </div>
               </div>
             ) : (
-              <ReviewsTable reviews={reviews || []} onReviewUpdate={() => mutate()} />
+              <ReviewsTable
+                reviews={reviews || []}
+                onReviewUpdate={mutate}
+                showApprovalControls
+              />
             )}
           </div>
         </div>

@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { format } from "date-fns"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Star } from "lucide-react"
+import { Star, Check, X } from "lucide-react"
+import { toast } from "@/components/ui/use-toast"
 
 interface Review {
   id: number
@@ -20,7 +22,9 @@ interface ReviewsTableProps {
   reviews: Review[]
   onReviewUpdate?: () => void
   loading?: boolean
+  showApprovalControls?: boolean 
 }
+
 
 function getStatusBadge(status?: string) {
   switch (status) {
@@ -36,6 +40,44 @@ function getStatusBadge(status?: string) {
 }
 
 export function ReviewsTable({ reviews, loading, onReviewUpdate }: ReviewsTableProps) {
+  const [updatingId, setUpdatingId] = useState<number | null>(null)
+
+  async function handleStatusChange(id: number, newStatus: "approved" | "rejected") {
+    try {
+      setUpdatingId(id)
+      const res = await fetch(`/api/reviews/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      const data = await res.json()
+      const result = data.result || data // unwrap wrapper response
+
+      if (res.ok) {
+        toast({
+          title: "Success",
+          description: `Review ${newStatus === "approved" ? "approved" : "rejected"} successfully.`,
+        })
+        onReviewUpdate?.()
+      } else {
+        toast({
+          title: "Error",
+          description: result?.message || "Failed to update review.",
+          variant: "destructive",
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      toast({
+        title: "Error",
+        description: "Network error while updating review.",
+        variant: "destructive",
+      })
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[300px] text-gray-400">
@@ -64,6 +106,7 @@ export function ReviewsTable({ reviews, loading, onReviewUpdate }: ReviewsTableP
             <TableHead className="font-semibold text-gray-300">Review</TableHead>
             <TableHead className="font-semibold text-gray-300">Date</TableHead>
             <TableHead className="font-semibold text-gray-300">Status</TableHead>
+            <TableHead className="font-semibold text-center text-gray-300">Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -90,6 +133,28 @@ export function ReviewsTable({ reviews, loading, onReviewUpdate }: ReviewsTableP
                 {review.submittedAt ? format(new Date(review.submittedAt), "MMM d, yyyy") : "—"}
               </TableCell>
               <TableCell>{getStatusBadge(review.status)}</TableCell>
+              <TableCell className="text-center">
+                {review.status === "pending" && (
+                  <div className="flex justify-center gap-2">
+                    <button
+                      disabled={updatingId === review.id}
+                      onClick={() => handleStatusChange(review.id, "approved")}
+                      className="p-2 text-green-400 transition hover:text-green-300 disabled:opacity-50"
+                      title="Approve"
+                    >
+                      <Check className="w-5 h-5" />
+                    </button>
+                    <button
+                      disabled={updatingId === review.id}
+                      onClick={() => handleStatusChange(review.id, "rejected")}
+                      className="p-2 text-red-400 transition hover:text-red-300 disabled:opacity-50"
+                      title="Reject"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
